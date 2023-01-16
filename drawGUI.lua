@@ -19,7 +19,7 @@ getgenv().Overwatch.gui.Outline.BorderSizePixel = 3
 
 getgenv().Overwatch.gui.UIGradient = Instance.new( "UIGradient", getgenv().Overwatch.gui.Container )
 getgenv().Overwatch.gui.UIGradient.Name = "UIGradient"
-getgenv().Overwatch.gui.UIGradient.ColorSequence = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(93, 93, 93)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
+getgenv().Overwatch.gui.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(93, 93, 93)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
 getgenv().Overwatch.gui.UIGradient.Rotation = 45
 
 getgenv().Overwatch.gui.Divider = Instance.new( "Frame", getgenv().Overwatch.gui.Container )
