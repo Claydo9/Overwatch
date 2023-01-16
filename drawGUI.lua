@@ -1,6 +1,6 @@
 
 getgenv().Overwatch.gui = {}
-getgenv().Overwatch.gui.Father = Instance.new( "ScreenGui" )
+getgenv().Overwatch.gui.Father = Instance.new( "ScreenGui", game:GetService( "Players" ).LocalPlayer.PlayerGui )
 getgenv().Overwatch.gui.Father.name = "drawGUI"
 
 getgenv().Overwatch.gui.Container = Instance.new( "Frame", getgenv().Overwatch.gui.Father )
