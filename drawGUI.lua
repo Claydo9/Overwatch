@@ -28,6 +28,7 @@ getgenv().Overwatch.gui.Divider.Position = UDim2.new( 0.305, 0, 0, 0 )
 getgenv().Overwatch.gui.Divider.Size = UDim2.new( 0.002, 0, 1, 0 )
 getgenv().Overwatch.gui.Divider.BackgroundColor3 = Color3.fromRGB( 150, 150, 150 )
 getgenv().Overwatch.gui.Divider.BorderSizePixel = 0
+getgenv().Overwatch.gui.Divider.ZIndex = 2
 
 getgenv().Overwatch.gui.StatusContainer = Instance.new( "ScrollingFrame", getgenv().Overwatch.gui.Container )
 getgenv().Overwatch.gui.StatusContainer.Name = "StatusContainer"
@@ -41,6 +42,7 @@ getgenv().Overwatch.gui.StatusContainer.ScrollBarThickness = 5
 getgenv().Overwatch.gui.StatusContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
 getgenv().Overwatch.gui.StatusContainer.BorderSizePixel = 0
 getgenv().Overwatch.gui.StatusContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+getgenv().Overwatch.gui.StatusContainer.ZIndex = 2
 
 getgenv().Overwatch.gui.UIGridLayout = Instance.new( "UIGridLayout", getgenv().Overwatch.gui.StatusContainer )
 getgenv().Overwatch.gui.UIGridLayout.CellPadding = UDim2.new( 0.005, 0, 0.01, 0 )
@@ -60,6 +62,7 @@ getgenv().Overwatch.gui.TemplateStatus.Name = "TemplateStatus"
 getgenv().Overwatch.gui.TemplateStatus.BackgroundColor3 = Color3.fromRGB( 53, 53, 53 )
 getgenv().Overwatch.gui.TemplateStatus.BorderColor3 = Color3.fromRGB( 198 ,198 ,198 )
 getgenv().Overwatch.gui.TemplateStatus.BorderSizePixel = 1
+getgenv().Overwatch.gui.TemplateStatus.ZIndex = 2
 
 getgenv().Overwatch.gui.Indicator = Instance.new( "Frame", getgenv().Overwatch.gui.TemplateStatus )
 getgenv().Overwatch.gui.Indicator.Name = "Indicator"
@@ -67,6 +70,7 @@ getgenv().Overwatch.gui.Indicator.Size = UDim2.new( 0.1, 0, 0.8, 0 )
 getgenv().Overwatch.gui.Indicator.Position = UDim2.new( 0.013, 0, 0.095, 0 )
 getgenv().Overwatch.gui.Indicator.BackgroundColor3 = Color3.fromRGB( 200, 0, 0 )
 getgenv().Overwatch.gui.Indicator.BorderSizePixel = 0
+getgenv().Overwatch.gui.Indicator.ZIndex = 2
 
 getgenv().Overwatch.gui.StatusToggle = Instance.new( "TextButton", getgenv().Overwatch.gui.TemplateStatus )
 getgenv().Overwatch.gui.StatusToggle.Name = "StatusToggle"
@@ -75,6 +79,7 @@ getgenv().Overwatch.gui.StatusToggle.TextTransparency = 1
 getgenv().Overwatch.gui.StatusToggle.ZIndex = 5
 getgenv().Overwatch.gui.StatusToggle.BorderSizePixel = 0
 getgenv().Overwatch.gui.StatusToggle.Size = UDim2.new( 1, 0, 1, 0 )
+getgenv().Overwatch.gui.StatusToggle.ZIndex = 2
 
 getgenv().Overwatch.gui.StatusName = Instance.new( "TextLabel", getgenv().Overwatch.gui.TemplateStatus )
 getgenv().Overwatch.gui.StatusName.Name = "StatusName"
@@ -86,3 +91,4 @@ getgenv().Overwatch.gui.StatusName.TextSize = 20
 getgenv().Overwatch.gui.StatusName.TextColor = Color3.fromRGB( 255, 255, 255 )
 getgenv().Overwatch.gui.StatusName.TextXAlignment = Enum.TextXAlignment.Left
 getgenv().Overwatch.gui.StatusName.TextWrapped = true
+getgenv().Overwatch.gui.StatusName.ZIndex = 2
