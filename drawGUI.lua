@@ -1,6 +1,7 @@
 
 getgenv().Overwatch.gui = {}
 getgenv().Overwatch.gui.Father = Instance.new( "ScreenGui" )
+print("test")
 getgenv().Overwatch.gui.Father.Name = "drawGUI"
 
 getgenv().Overwatch.gui.Container = Instance.new( "Frame", getgenv().Overwatch.gui.Father )
