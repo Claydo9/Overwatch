@@ -55,7 +55,7 @@ getgenv().Overwatch.gui.UIPadding.PaddingTop = UDim.new( 0.005, 0 )
 
 -- Tempalte
 
-getgenv().Overwatch.gui.TemplateStatus = Instance.new( "Frame", getgenv().Overwatch.gui.StatusContainer )
+getgenv().Overwatch.gui.TemplateStatus = Instance.new( "Frame", game:GetService("ReplicatedStorage") )
 getgenv().Overwatch.gui.TemplateStatus.Name = "TemplateStatus"
 getgenv().Overwatch.gui.TemplateStatus.BackgroundColor3 = Color3.fromRGB( 53, 53, 53 )
 getgenv().Overwatch.gui.TemplateStatus.BorderColor3 = Color3.fromRGB( 198 ,198 ,198 )
