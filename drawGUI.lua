@@ -1,16 +1,16 @@
 getgenv().Overwatch.gui = {
     Father = Instance.new( "ScreenGui", game:GetService( "Players" ).LocalPlayer.PlayerGui ),
-    Container = Instance.new( "Frame", getgenv().Overwatch.gui.Father )
-    Outline = Instance.new( "Frame", getgenv().Overwatch.gui.Father )
-    UIGradient = Instance.new( "UIGradient", getgenv().Overwatch.gui.Container )
-    Divider = Instance.new( "Frame", getgenv().Overwatch.gui.Container )
-    StatusContainer = Instance.new( "ScrollingFrame", getgenv().Overwatch.gui.Container )
-    UIGridLayout = Instance.new( "UIGridLayout", getgenv().Overwatch.gui.StatusContainer )
-    UIPadding = Instance.new( "UIPadding", getgenv().Overwatch.gui.StatusContainer )
-    TemplateStatus = Instance.new( "Frame", game:GetService("ReplicatedStorage") )
-    Indicator = Instance.new( "Frame", getgenv().Overwatch.gui.TemplateStatus )
-    StatusToggle = Instance.new( "TextButton", getgenv().Overwatch.gui.TemplateStatus )
-    .StatusName = Instance.new( "TextLabel", getgenv().Overwatch.gui.TemplateStatus )
+    Container = Instance.new( "Frame", getgenv().Overwatch.gui.Father ),
+    Outline = Instance.new( "Frame", getgenv().Overwatch.gui.Father ),
+    UIGradient = Instance.new( "UIGradient", getgenv().Overwatch.gui.Container ),
+    Divider = Instance.new( "Frame", getgenv().Overwatch.gui.Container ),
+    StatusContainer = Instance.new( "ScrollingFrame", getgenv().Overwatch.gui.Container ),
+    UIGridLayout = Instance.new( "UIGridLayout", getgenv().Overwatch.gui.StatusContainer ),
+    UIPadding = Instance.new( "UIPadding", getgenv().Overwatch.gui.StatusContainer ),
+    TemplateStatus = Instance.new( "Frame", game:GetService("ReplicatedStorage") ),
+    Indicator = Instance.new( "Frame", getgenv().Overwatch.gui.TemplateStatus ),
+    StatusToggle = Instance.new( "TextButton", getgenv().Overwatch.gui.TemplateStatus ),
+    StatusName = Instance.new( "TextLabel", getgenv().Overwatch.gui.TemplateStatus )
 }
 
 local function setupGUI()
@@ -63,7 +63,7 @@ local function setupGUI()
     gui.UIPadding.PaddingRight = UDim.new( 0.02, 0 )
     gui.UIPadding.PaddingTop = UDim.new( 0.005, 0 )
 
-    -- Template
+    -- Tempalte
 
     gui.TemplateStatus.Name = "TemplateStatus"
     gui.TemplateStatus.BackgroundColor3 = Color3.fromRGB( 53, 53, 53 )
