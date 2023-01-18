@@ -225,6 +225,7 @@ local function setupGUI()
     Gui.DROP_DOWN_BUTTON.ZIndex = 6
 
     Gui.DROP_DOWN_OPTION_BUTTON = Instance.new( "TextButton", Gui.DROP_DOWN_OPTION )
+    Gui.DROP_DOWN_OPTION_BUTTON.Name = "DROP_DOWN_OPTION_BUTTON"
     Gui.DROP_DOWN_OPTION_BUTTON.BackgroundTransparency = 1
     Gui.DROP_DOWN_OPTION_BUTTON.ZIndex = 7
 
