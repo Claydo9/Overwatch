@@ -189,11 +189,12 @@ local function setupGUI()
     Gui.DROP_DOWN_TEXT.BackgroundColor3 = Color3.fromRGB( 31, 31, 31 )
     Gui.DROP_DOWN_TEXT.Position = UDim2.new( 0.025, 0, 0.1, 0 )
     Gui.DROP_DOWN_TEXT.Font = Enum.Font.Arial
-    Gui.DROP_DOWN_TEXT.textSize = 20
+    Gui.DROP_DOWN_TEXT.TextSize = 20
     Gui.DROP_DOWN_TEXT.TextColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_CONTAINER = Instance.new( "ScrollingFrame", Gui.DROP_DOWN )
     Gui.DROP_DOWN_OPTION_CONTAINER.Name = "DROP_DOWN_OPTION_CONTAINER"
     Gui.DROP_DOWN_OPTION_CONTAINER.Size = UDim2.new( 0.3, 0, 1, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER.Visible = false
     Gui.DROP_DOWN_OPTION_CONTAINER.BackgroundColor3 = Color3.fromRGB( 53, 53, 53 )
     Gui.DROP_DOWN_OPTION_CONTAINER.BackgroundTransparency = 0
     Gui.DROP_DOWN_OPTION_CONTAINER.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -260,6 +261,7 @@ function Overwatch.Functions:CreateToggleButton( callback, name, displayName )
     local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local newStatus = ReplicatedStorage.Templates.TOGGLE_BUTTON:Clone()
     newStatus.Parent = BUTTON_CONTAINER
+    newStatus.Name = name .. "_TOGGLEBUTTON"
     newStatus.TOGGLE_BUTTON_TEXT.Text = displayName
     Overwatch.Statuses[name] = false
 
@@ -277,18 +279,20 @@ function Overwatch.Functions:CreateToggleButton( callback, name, displayName )
 end
 
 function Overwatch.Functions:CreatePushButton( callback, name, displayName )
-    local BUTOTN_CONTAINER = Gui.Container.BUTTON_CONTAINER
+    local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local newButton = ReplicatedStorage.Templates.PUSH_BUTTON:Clone()
-    newButton.Parent = BUTOTN_CONTAINER
+    newButton.Name = name .. "_PUSHBUTTON"
+    newButton.Parent = BUTTON_CONTAINER
     newButton.PUSH_BUTTON_TEXT.Text = displayName
     
     Connections[name .. "_PUSHBUTTONEVENT"] = newButton.PUSH_BUTTON_INTERNAL.MouseButton1Click:Connect( callback )
 end
 
 function Overwatch.Functions:CreateTextBox( callback, name )
-    local BUTOTN_CONTAINER = Gui.Container.BUTTON_CONTAINER
+    local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local newTextBox = ReplicatedStorage.Templates.TEXT_BOX:Clone()
-    newTextBox.Parent = BUTOTN_CONTAINER
+    newTextBox.Name = name .. "_TEXTBOX"
+    newTextBox.Parent = BUTTON_CONTAINER
     newTextBox.TEXT_BOX_INTERNAL.Text = "Text Here"
     
     local function gate()
@@ -296,6 +300,49 @@ function Overwatch.Functions:CreateTextBox( callback, name )
     end
     Connections[name .. "_TEXTBOXEVENT"] = newTextBox.TEXT_BOX_INTERNAL.FocusLost:Connect( gate )
 end
+
+function Overwatch.Functions:CreateDropDownConfig( callbacks, names, displayNames )
+    local config = {}
+    for i = 1, #callbacks do config[i] = {} end
+    for i = 1, #callbacks do
+        config[i].callback = callbacks[i]
+        config[i].name = names[i]
+        config[i].displayName = displayNames[i]
+    end
+    return config
+end
+function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
+    local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
+    local DROP_DOWN = ReplicatedStorage.Templates.DROP_DOWN:Clone()
+    Overwatch.Statuses[name] = false
+    DROP_DOWN.Name = name .. "_DROPDOWN"
+    DROP_DOWN.Parent = BUTTON_CONTAINER
+    DROP_DOWN.DROP_DOWN_TEXT.Text = displayName
+
+    for i, v in pairs( optionTbl ) do
+        local o_callback = v.callback
+        local o_name = v.name
+        local o_displayName = v.displayName
+
+        local DROP_DOWN_OPTION = ReplicatedStorage.Templates.DROP_DOWN_OPTION:Clone()
+        DROP_DOWN_OPTION.Name = o_name .. "_DROPDOWNOPTION"
+        DROP_DOWN_OPTION.Parent = DROP_DOWN
+        DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.Text = o_displayName
+        Connections[name .. "_DROPDOWNOPTIONEVENT"] = DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.MouseButton1Click:Connect( o_callback )
+    end
+
+    local function toggleActive()
+        Overwatch.Statuses[name] = not Overwatch.Statuses[name]
+        if Overwatch.Statuses[name] then 
+            DROP_DOWN.DROP_DOWN_OPTION_CONTAINER.Visible = true
+        else
+            DROP_DOWN.DROP_DOWN_OPTION_CONTAINER.Visible = false
+        end
+    end
+
+    DROP_DOWN.DROP_DOWN_BUTTON.MouseButton1Click:Connect( toggleActive )
+end
+
 
 function Overwatch.Functions:DisableDoors( state )   
 end
@@ -331,6 +378,20 @@ Overwatch.Functions:CreateToggleButton( Overwatch.Functions.DisableDoors, "Disab
 Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAboveLaw", "Set Above Law" )
 Overwatch.Functions:CreateTextBox( Overwatch.Functions.TestTextBoxCallback, "TestTextBox" )
 Overwatch.Functions:CreatePushButton( Overwatch.Functions.TestPushButtonCallback, "TestPushButton", "button" )
+
+function Overwatch.Functions:DropDownTestCallback1()
+    rconsolewarn( "Option 1")
+end
+
+function Overwatch.Functions:DropDownTestCallback2()
+    rconsolewarn( "Option 2" )
+end
+local Config = Overwatch.Functions:CreateDropDownConfig(
+    {Overwatch.Functions.DropDownTestCallback1, Overwatch.Functions.DropDownTestCallback2},
+    {"DropDownTestCallback1", "DropDownTestCallback2"},
+    {"Option 1", "Option 2"}
+)
+Overwatch.Functions:CreateDropDown( Config, "DropDownTest1", "Drop Down")
 
 local function runtime()
     if Overwatch.Statuses.DisableDoors then
