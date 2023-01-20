@@ -94,7 +94,7 @@ local function setupGUI()
     Gui.TOGGLE_BUTTON_INDICATOR.Name = "TOGGLE_BUTTON_INDICATOR"
     Gui.TOGGLE_BUTTON_INDICATOR.Size = UDim2.new( 0.1, 0, 0.8, 0 )
     Gui.TOGGLE_BUTTON_INDICATOR.Position = UDim2.new( 0.013, 0, 0.095, 0 )
-    Gui.TOGGLE_BUTTON_INDICATOR.BackgroundColor3 = Color3.fromRGB( 200, 0, 0 )
+    Gui.TOGGLE_BUTTON_INDICATOR.BackgroundColor3 = Color3.fromRGB( 255, 0, 0 )
     Gui.TOGGLE_BUTTON_INDICATOR.BorderSizePixel = 0
     Gui.TOGGLE_BUTTON_INDICATOR.ZIndex = 2
     Gui.TOGGLE_BUTTON_BUTTON_INT = Instance.new( "TextButton", Gui.TOGGLE_BUTTON )
@@ -309,6 +309,9 @@ function Overwatch.Functions:CreatePushButton( callback, name, displayName )
     Connections[name .. "_PUSHBUTTONEVENT"] = newButton.PUSH_BUTTON_INTERNAL.MouseButton1Click:Connect( callback )
 end
 
+function Overwatch.Functions.TextBoxRouter( callback, text )
+    callback( text )
+end
 function Overwatch.Functions:CreateTextBox( callback, name )
     local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local newTextBox = ReplicatedStorage.Templates.TEXT_BOX:Clone()
@@ -316,10 +319,9 @@ function Overwatch.Functions:CreateTextBox( callback, name )
     newTextBox.Parent = BUTTON_CONTAINER
     newTextBox.TEXT_BOX_INTERNAL.Text = "Text Here"
     
-    local function gate()
-        callback( newTextBox.TEXT_BOX_INTERNAL.ContentText )
-    end
-    Connections[name .. "_TEXTBOXEVENT"] = newTextBox.TEXT_BOX_INTERNAL.FocusLost:Connect( gate )
+    Connections[name .. "_TEXTBOXEVENT"] = newTextBox.TEXT_BOX_INTERNAL.FocusLost:Connect( function() 
+        Overwatch.Functions.TextBoxRouter( callback, newTextBox.TEXT_BOX_INTERNAL.Text )
+    end )
 end
 
 function Overwatch.Functions:CreateDropDownConfig( callbacks, names, displayNames )
@@ -335,7 +337,7 @@ end
 
 function Overwatch.Functions.DropDownRouter( drop, callback )
     drop.Visible = false
-    callback()    
+    callback()
 end
 
 function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
@@ -410,14 +412,6 @@ function Overwatch.Functions:SetAboveLaw( state )
     end
 end
 
-function Overwatch.Functions:TestTextBoxCallback( text )
-    rconsolewarn( "woooow text!!!")
-end
-
-function Overwatch.Functions:TestPushButtonCallback()
-    rconsolewarn( "button pressy" )
-end
-
 function Overwatch.Functions:GiveWeapon( wpn )
     local weaponObj = game.Workspace.Prison_ITEMS.giver:FindFirstChild( wpn )
     local ItemHandler = game.Workspace.Remote.ItemHandler
@@ -447,6 +441,32 @@ function Overwatch.Functions:TeleportToSpawn( spawn )
     if game.Workspace:FindFirstChild( player.Name ) then
         player.Character.HumanoidRootPart.CFrame = spawn.CFrame
     end
+end
+
+function Overwatch.Functions:SetKillAura( state )
+end
+
+function Overwatch.Functions:SetInfAmmo( state, wep )
+    local LENV_ = require( wep.GunStates )
+    if state then
+        LENV_["StoredAmmo"] = 999999999999999999999999999
+    end
+end
+
+function Overwatch.Functions:SetWeaponInstaKill( state, wep )
+    local LENV_ = require( wep.GunStates )
+    if state then
+        LENV_["Damage"] = 99999999999999999999
+    end
+end
+
+function Overwatch.Functions:SelectWeaponUpgrade( w, name )
+    print( w, name )
+    local wep = player.Backpack:FindFirstChild( name )
+    local charWep = player.Backpack:FindFirstChild( name )
+
+    if wep then Overwatch.Functions:SetWeaponInstaKill( true, wep ) Overwatch.Functions:SetInfAmmo( true, charWep ) end
+    if charWep then Overwatch.Functions:SetWeaponInstaKill( true, charWep ) Overwatch.Functions:SetInfAmmo( true, charWep ) end
 end
 
 local DD_GiveItemConfig = Overwatch.Functions:CreateDropDownConfig(
@@ -488,7 +508,8 @@ Overwatch.Functions:CreateDropDown( DD_TeleportToSpawnConfig, "DD_TELEPORTTOSPAW
 
 Overwatch.Functions:CreateToggleButton( Overwatch.Functions.DisableDoors, "DisableDoors", "Disable Doors" )
 Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAboveLaw", "Set Above Law" )
-
+Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetKillAura, "SetKillAura", "Kill Aura" )
+Overwatch.Functions:CreateTextBox( Overwatch.Functions.SelectWeaponUpgrade, "TB_SELECTWEAPONUPGRADE" )
 
 local function runtime()
     if Overwatch.Statuses["DisableDoors" .. Addendum.ToggleButton] then
@@ -517,6 +538,19 @@ local function runtime()
             if LENV_ClientInputHandler and CS then 
                 CS.isFighting = false
                 CS.isArrested = false
+            end
+        end
+    end
+    if Overwatch.Statuses["SetKillAura" .. Addendum.ToggleButton] then
+        local MeleeEvent = ReplicatedStorage.meleeEvent
+        if game.Workspace:FindFirstChild( player.Name ) then
+            for i, v in pairs( game:GetService( "Players"):GetChildren() ) do
+                if game.Workspace:FindFirstChild( v.Name ) and v.Name ~= player.Name then
+                    if (player.Character.Torso.Position - v.Character.Torso.Position ).magnitude < 200 and Overwatch.Statuses["SetKillAura" .. Addendum.ToggleButton] then
+                        MeleeEvent:FireServer( v )     
+                        task.wait()
+                    end
+                end
             end
         end
     end
