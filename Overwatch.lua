@@ -189,7 +189,7 @@ local function setupGUI()
     Gui.DROP_DOWN_ARROW.BackgroundTransparency = 1
     Gui.DROP_DOWN_ARROW.BorderSizePixel = 0
     Gui.DROP_DOWN_ARROW.Name = "DROP_DOWN_ARROW"
-    Gui.DROP_DOWN_ARROW.ZIndex =  7
+    Gui.DROP_DOWN_ARROW.ZIndex =  2
     Gui.DROP_DOWN_TEXT = Instance.new( "TextLabel", Gui.DROP_DOWN )
     Gui.DROP_DOWN_TEXT.Name = "DROP_DOWN_TEXT"
     Gui.DROP_DOWN_TEXT.Size = UDim2.new( 0.95, 0, 0.8, 0 )
@@ -199,7 +199,7 @@ local function setupGUI()
     Gui.DROP_DOWN_TEXT.Position = UDim2.new( 0.025, 0, 0.1, 0 )
     Gui.DROP_DOWN_TEXT.Font = Enum.Font.Arial
     Gui.DROP_DOWN_TEXT.TextSize = 20
-    Gui.DROP_DOWN_TEXT.ZIndex = 7
+    Gui.DROP_DOWN_TEXT.ZIndex = 2
     Gui.DROP_DOWN_TEXT.TextColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_CONTAINER = Instance.new( "ScrollingFrame", Gui.DROP_DOWN )
     Gui.DROP_DOWN_OPTION_CONTAINER.Name = "DROP_DOWN_OPTION_CONTAINER"
@@ -235,14 +235,14 @@ local function setupGUI()
     Gui.DROP_DOWN_OPTION.BackgroundColor3 = Color3.fromRGB( 31, 31, 31 )
     Gui.DROP_DOWN_OPTION.BorderSizePixel = 1
     Gui.DROP_DOWN_OPTION.BorderColor3 = Color3.fromRGB( 198, 198, 198 )
-    Gui.DROP_DOWN_OPTION.ZIndex = 7
+    Gui.DROP_DOWN_OPTION.ZIndex = 2
 
     Gui.DROP_DOWN_OPTION_BUTTON = Instance.new( "TextButton", Gui.DROP_DOWN_OPTION )
     Gui.DROP_DOWN_OPTION_BUTTON.Name = "DROP_DOWN_OPTION_BUTTON"
     Gui.DROP_DOWN_OPTION_BUTTON.Size = UDim2.new( 1, 0, 1, 0 )
     Gui.DROP_DOWN_OPTION_BUTTON.TextColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_BUTTON.BackgroundTransparency = 1
-    Gui.DROP_DOWN_OPTION_BUTTON.ZIndex = 8
+    Gui.DROP_DOWN_OPTION_BUTTON.ZIndex = 2
 end
 setupGUI()
 
@@ -264,6 +264,8 @@ Overwatch.StatusColors = {
     ["StatusActive"] = Color3.fromRGB( 0, 255, 0 ),
     ["StatusInactive"] = Color3.fromRGB( 255, 0, 0 )
 }
+
+Overwatch.NumberOfDropDowns = 0
 
 function Overwatch:PlayerIsGuard()
     return game:GetService( "Players" ).LocalPlayer.Team == game:GetService( "Teams" ).Guards
@@ -330,11 +332,13 @@ function Overwatch.Functions.DropDownRouter( drop, callback )
 end
 
 function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
+    Overwatch.NumberOfDropDowns = Overwatch.NumberOfDropDowns + 1
     local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local DROP_DOWN = ReplicatedStorage.Templates.DROP_DOWN:Clone()
     Overwatch.Statuses[name .. "_DROPDOWN"] = false
     DROP_DOWN.Name = name .. "_DROPDOWN"
     DROP_DOWN.Parent = BUTTON_CONTAINER
+    DROP_DOWN.DROP_DOWN_OPTION_CONTAINER.ZIndex = 2 + Overwatch.NumberOfDropDowns
     DROP_DOWN.DROP_DOWN_TEXT.Text = displayName
 
     for i, v in pairs( optionTbl ) do
@@ -346,6 +350,17 @@ function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
         DROP_DOWN_OPTION.Name = o_name .. "_DROPDOWNOPTION"
         DROP_DOWN_OPTION.Parent = DROP_DOWN.DROP_DOWN_OPTION_CONTAINER
         DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.Text = o_displayName
+
+        for i, v in pairs( DROP_DOWN.DROP_DOWN_OPTION_CONTAINER:GetChildren() ) do
+            if v:IsA( "Frame" ) then
+                v.ZIndex = 3 + Overwatch.NumberOfDropDowns
+                for k, t in pairs( v:GetChildren() ) do
+                    if t:IsA( "TextButton" ) or t:IsA( "TextLabel" ) then
+                        t.ZIndex = 4 + Overwatch.NumberOfDropDowns
+                    end
+                end
+            end
+        end
         Connections[name .. "_DROPDOWNOPTIONEVENT"] = DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.MouseButton1Click:Connect( function()
             Overwatch.Functions.DropDownRouter( DROP_DOWN.DROP_DOWN_OPTION_CONTAINER, o_callback ) 
         end )
@@ -394,8 +409,6 @@ function Overwatch.Functions:TestPushButtonCallback()
 end
 Overwatch.Functions:CreateToggleButton( Overwatch.Functions.DisableDoors, "DisableDoors", "Disable Doors" )
 Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAboveLaw", "Set Above Law" )
-Overwatch.Functions:CreateTextBox( Overwatch.Functions.TestTextBoxCallback, "TestTextBox" )
-Overwatch.Functions:CreatePushButton( Overwatch.Functions.TestPushButtonCallback, "TestPushButton", "button" )
 
 function Overwatch.Functions:GiveWeapon( wpn )
     local weaponObj = game.Workspace.Prison_ITEMS.giver:FindFirstChild( wpn )
@@ -417,12 +430,34 @@ function Overwatch.Functions:GiveItemAK47()
     Overwatch.Functions:GiveWeapon( "AK-47" ) 
 end
 
-local Config = Overwatch.Functions:CreateDropDownConfig(
+function Overwatch.Functions:SetPlayerTeam( color )
+    local event = game.Workspace.Remote.TeamEvent
+    event:FireServer( color )
+end
+
+local DD_GiveItemConfig = Overwatch.Functions:CreateDropDownConfig(
     {Overwatch.Functions.GiveItemM9, Overwatch.Functions.GiveItemRem870, Overwatch.Functions.GiveItemAK47},
-    {"GiveItemDropDownGiveM9", "GiveItemDropDownGiveRem870", "GiveItemDropDownGiveAK47"},
+    {"DD_GIVEITEMM9", "DD_GIVEITEMREM870", "DD_GIVEITEMAK47"},
     {"M9", "Remington 870", "AK-47"}
 )
-Overwatch.Functions:CreateDropDown( Config, "GiveItemDropDown", "Give Weapon")
+
+Overwatch.Functions:CreateDropDown( DD_GiveItemConfig, "DD_GIVEITEM", "Give Weapon" )
+
+local DD_SetPlayerTeamConfig = Overwatch.Functions:CreateDropDownConfig(
+    {
+        function() Overwatch.Functions:SetPlayerTeam( "Bright orange" ) end,
+        function() Overwatch.Functions:SetPlayerTeam( "Bright blue" ) end,
+        function() Overwatch.Functions:SetPlayerTeam( "Medium stone grey" ) end
+    },
+    {
+        "DD_SETPLAYERTEAMPRISONER", "DD_SETPLAYERTEAMGUARD", "DD_SETPLAYERTEAMNEUTRAL"
+    },
+    {
+        "Prisoner", "Guard", "Neutral"
+    }
+)
+
+Overwatch.Functions:CreateDropDown( DD_SetPlayerTeamConfig, "DD_SETPLAYERTEAM", "Set Team" )
 
 local function runtime()
     if Overwatch.Statuses["DisableDoors" .. Addendum.ToggleButton] then
