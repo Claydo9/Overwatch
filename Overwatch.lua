@@ -7,11 +7,14 @@ getgenv().Overwatch = {}
 getgenv().Overwatch.Functions = {}
 getgenv().Overwatch.Connections = {}
 getgenv().Overwatch.gui = {}
+getgenv().Overwatch.Addendums = {
+    ["ToggleButton"] = "_TOGGLEBUTTON",
+}
 local Overwatch = getgenv().Overwatch
 local Functions = Overwatch.Functions
 local Connections = Overwatch.Connections
 local Gui = Overwatch.gui
-
+local Addendum = Overwatch.Addendums
 local player = game:GetService( "Players" ).LocalPlayer
 local playerGui = player.PlayerGui 
 
@@ -70,7 +73,7 @@ local function setupGUI()
     Gui.UIPadding = Instance.new( "UIPadding", Gui.BUTTON_CONTAINER )
     Gui.UIPadding.PaddingBottom = UDim.new( 0.005, 0 )
     Gui.UIPadding.PaddingLeft = UDim.new( 0.02, 0 )
-    Gui.UIPadding.PaddingRight = UDim.new( 0.02, 0 )
+    Gui.UIPadding.PaddingRight = UDim.new( 0.025, 0 )
     Gui.UIPadding.PaddingTop = UDim.new( 0.005, 0 )
 
     -- Template Toggle Button
@@ -182,18 +185,26 @@ local function setupGUI()
     Gui.DROP_DOWN_ARROW.Font = Enum.Font.SourceSansSemibold
     Gui.DROP_DOWN_ARROW.Text = "V"
     Gui.DROP_DOWN_ARROW.TextSize = 20
+    Gui.DROP_DOWN_ARROW.TextColor3 = Color3.fromRGB( 255, 255, 255 )
+    Gui.DROP_DOWN_ARROW.BackgroundTransparency = 1
+    Gui.DROP_DOWN_ARROW.BorderSizePixel = 0
     Gui.DROP_DOWN_ARROW.Name = "DROP_DOWN_ARROW"
+    Gui.DROP_DOWN_ARROW.ZIndex =  7
     Gui.DROP_DOWN_TEXT = Instance.new( "TextLabel", Gui.DROP_DOWN )
     Gui.DROP_DOWN_TEXT.Name = "DROP_DOWN_TEXT"
     Gui.DROP_DOWN_TEXT.Size = UDim2.new( 0.95, 0, 0.8, 0 )
+    Gui.DROP_DOWN_TEXT.BackgroundTransparency = 1
+    Gui.DROP_DOWN_TEXT.TextTransparency = 0
     Gui.DROP_DOWN_TEXT.BackgroundColor3 = Color3.fromRGB( 31, 31, 31 )
     Gui.DROP_DOWN_TEXT.Position = UDim2.new( 0.025, 0, 0.1, 0 )
     Gui.DROP_DOWN_TEXT.Font = Enum.Font.Arial
     Gui.DROP_DOWN_TEXT.TextSize = 20
+    Gui.DROP_DOWN_TEXT.ZIndex = 7
     Gui.DROP_DOWN_TEXT.TextColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_CONTAINER = Instance.new( "ScrollingFrame", Gui.DROP_DOWN )
     Gui.DROP_DOWN_OPTION_CONTAINER.Name = "DROP_DOWN_OPTION_CONTAINER"
-    Gui.DROP_DOWN_OPTION_CONTAINER.Size = UDim2.new( 0.3, 0, 1, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER.Size = UDim2.new( 1, 0, 3, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER.Position = UDim2.new( 0, 0, 1, 0 )
     Gui.DROP_DOWN_OPTION_CONTAINER.Visible = false
     Gui.DROP_DOWN_OPTION_CONTAINER.BackgroundColor3 = Color3.fromRGB( 53, 53, 53 )
     Gui.DROP_DOWN_OPTION_CONTAINER.BackgroundTransparency = 0
@@ -202,20 +213,21 @@ local function setupGUI()
     Gui.DROP_DOWN_OPTION_CONTAINER.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
     Gui.DROP_DOWN_OPTION_CONTAINER.ScrollBarImageColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_CONTAINER.ScrollBarThickness = 4
-    Gui.DROP_DOWN_OPTION_CONTAINER.CanvasSize = UDim2.new( 0, 0, 1, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER.CanvasSize = UDim2.new( 0, 0, 2, 0 )
     Gui.DROP_DOWN_OPTION_CONTAINER.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    Gui.DROP_DOWN_OPTION_CONTAINER.BorderSizePixel = 0
+    Gui.DROP_DOWN_OPTION_CONTAINER.BorderSizePixel = 1
+    Gui.DROP_DOWN_OPTION_CONTAINER.BorderColor3 = Color3.fromRGB( 198, 198, 198 )
     Gui.DROP_DOWN_OPTION_CONTAINER.ScrollingDirection = Enum.ScrollingDirection.Y
     Gui.DROP_DOWN_OPTION_CONTAINER.ZIndex = 5
     Gui.DROP_DOWN_OPTION_CONTAINER_LAYOUT = Instance.new( "UIGridLayout", Gui.DROP_DOWN.DROP_DOWN_OPTION_CONTAINER )
     Gui.DROP_DOWN_OPTION_CONTAINER_LAYOUT.CellPadding = UDim2.new( 0.05, 0, 0.05, 0 )
-    Gui.DROP_DOWN_OPTION_CONTAINER_LAYOUT.CellSize = UDim2.new( 1, 0, 0.3, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER_LAYOUT.CellSize = UDim2.new( 0.95, 0, 0.3, 0 )
     Gui.DROP_DOWN_OPTION_CONTAINER_LAYOUT.FillDirection = Enum.FillDirection.Horizontal
     Gui.DROP_DOWN_OPTION_CONTAINER_PADDING = Instance.new( "UIPadding", Gui.DROP_DOWN.DROP_DOWN_OPTION_CONTAINER )
     Gui.DROP_DOWN_OPTION_CONTAINER_PADDING.PaddingBottom = UDim.new( 0, 0 )
     Gui.DROP_DOWN_OPTION_CONTAINER_PADDING.PaddingLeft = UDim.new( 0.02, 0 )
     Gui.DROP_DOWN_OPTION_CONTAINER_PADDING.PaddingRight = UDim.new( 0.022, 0 )
-    Gui.DROP_DOWN_OPTION_CONTAINER_PADDING.PaddingTop = UDim.new( 0.0025, 0 )
+    Gui.DROP_DOWN_OPTION_CONTAINER_PADDING.PaddingTop = UDim.new( 0.05, 0 )
 
     --> Template Dropdown Option
     Gui.DROP_DOWN_OPTION = Instance.new( "Frame", templates )
@@ -223,14 +235,14 @@ local function setupGUI()
     Gui.DROP_DOWN_OPTION.BackgroundColor3 = Color3.fromRGB( 31, 31, 31 )
     Gui.DROP_DOWN_OPTION.BorderSizePixel = 1
     Gui.DROP_DOWN_OPTION.BorderColor3 = Color3.fromRGB( 198, 198, 198 )
-    Gui.DROP_DOWN_BUTTON.ZIndex = 6
+    Gui.DROP_DOWN_OPTION.ZIndex = 7
 
     Gui.DROP_DOWN_OPTION_BUTTON = Instance.new( "TextButton", Gui.DROP_DOWN_OPTION )
     Gui.DROP_DOWN_OPTION_BUTTON.Name = "DROP_DOWN_OPTION_BUTTON"
+    Gui.DROP_DOWN_OPTION_BUTTON.Size = UDim2.new( 1, 0, 1, 0 )
+    Gui.DROP_DOWN_OPTION_BUTTON.TextColor3 = Color3.fromRGB( 255, 255, 255 )
     Gui.DROP_DOWN_OPTION_BUTTON.BackgroundTransparency = 1
-    Gui.DROP_DOWN_OPTION_BUTTON.ZIndex = 7
-
-
+    Gui.DROP_DOWN_OPTION_BUTTON.ZIndex = 8
 end
 setupGUI()
 
@@ -261,13 +273,13 @@ function Overwatch.Functions:CreateToggleButton( callback, name, displayName )
     local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local newStatus = ReplicatedStorage.Templates.TOGGLE_BUTTON:Clone()
     newStatus.Parent = BUTTON_CONTAINER
-    newStatus.Name = name .. "_TOGGLEBUTTON"
+    newStatus.Name = name .. Addendum.ToggleButton
     newStatus.TOGGLE_BUTTON_TEXT.Text = displayName
-    Overwatch.Statuses[name] = false
+    Overwatch.Statuses[name .. Addendum.ToggleButton] = false
 
     local function toggleStatus()
-        Overwatch.Statuses[name] = not Overwatch.Statuses[name]
-        if Overwatch.Statuses[name] then 
+        Overwatch.Statuses[name .. Addendum.ToggleButton] = not Overwatch.Statuses[name .. Addendum.ToggleButton]
+        if Overwatch.Statuses[name .. Addendum.ToggleButton] then 
             newStatus.TOGGLE_BUTTON_INDICATOR.BackgroundColor3 = Overwatch.StatusColors.StatusActive 
             callback( true )
         else 
@@ -311,10 +323,16 @@ function Overwatch.Functions:CreateDropDownConfig( callbacks, names, displayName
     end
     return config
 end
+
+function Overwatch.Functions.DropDownRouter( drop, callback )
+    drop.Visible = false
+    callback()    
+end
+
 function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
     local BUTTON_CONTAINER = Gui.Container.BUTTON_CONTAINER
     local DROP_DOWN = ReplicatedStorage.Templates.DROP_DOWN:Clone()
-    Overwatch.Statuses[name] = false
+    Overwatch.Statuses[name .. "_DROPDOWN"] = false
     DROP_DOWN.Name = name .. "_DROPDOWN"
     DROP_DOWN.Parent = BUTTON_CONTAINER
     DROP_DOWN.DROP_DOWN_TEXT.Text = displayName
@@ -326,14 +344,16 @@ function Overwatch.Functions:CreateDropDown( optionTbl, name, displayName )
 
         local DROP_DOWN_OPTION = ReplicatedStorage.Templates.DROP_DOWN_OPTION:Clone()
         DROP_DOWN_OPTION.Name = o_name .. "_DROPDOWNOPTION"
-        DROP_DOWN_OPTION.Parent = DROP_DOWN
+        DROP_DOWN_OPTION.Parent = DROP_DOWN.DROP_DOWN_OPTION_CONTAINER
         DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.Text = o_displayName
-        Connections[name .. "_DROPDOWNOPTIONEVENT"] = DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.MouseButton1Click:Connect( o_callback )
+        Connections[name .. "_DROPDOWNOPTIONEVENT"] = DROP_DOWN_OPTION.DROP_DOWN_OPTION_BUTTON.MouseButton1Click:Connect( function()
+            Overwatch.Functions.DropDownRouter( DROP_DOWN.DROP_DOWN_OPTION_CONTAINER, o_callback ) 
+        end )
     end
 
     local function toggleActive()
-        Overwatch.Statuses[name] = not Overwatch.Statuses[name]
-        if Overwatch.Statuses[name] then 
+        Overwatch.Statuses[name .. "_DROPDOWN"] = not Overwatch.Statuses[name .. "_DROPDOWN"]
+        if Overwatch.Statuses[name .. "_DROPDOWN"] then 
             DROP_DOWN.DROP_DOWN_OPTION_CONTAINER.Visible = true
         else
             DROP_DOWN.DROP_DOWN_OPTION_CONTAINER.Visible = false
@@ -350,8 +370,8 @@ end
 function Overwatch.Functions:SetAboveLaw( state )
     local LENV_ClientInputHandler = nil
     local LENV_CS = nil
-    local function onCharacterSpawn( char )
-        local e = char:WaitForChild( "ClientInputHandler" )
+    if game.Workspace:FindFirstChild( player.Name ) then
+        local e = player.Character.ClientInputHandler
         LENV_ClientInputHandler = getsenv( e )
         LENV_CS = LENV_ClientInputHandler.cs 
         
@@ -363,8 +383,6 @@ function Overwatch.Functions:SetAboveLaw( state )
             end
         end
     end
-
-    Connections.SetAboveLaw_CHARACTERADDEDEVENT = player.CharacterAdded:Connect( onCharacterSpawn )
 end
 
 function Overwatch.Functions:TestTextBoxCallback( text )
@@ -379,22 +397,35 @@ Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAbo
 Overwatch.Functions:CreateTextBox( Overwatch.Functions.TestTextBoxCallback, "TestTextBox" )
 Overwatch.Functions:CreatePushButton( Overwatch.Functions.TestPushButtonCallback, "TestPushButton", "button" )
 
-function Overwatch.Functions:DropDownTestCallback1()
-    rconsolewarn( "Option 1")
+function Overwatch.Functions:GiveWeapon( wpn )
+    local weaponObj = game.Workspace.Prison_ITEMS.giver:FindFirstChild( wpn )
+    local ItemHandler = game.Workspace.Remote.ItemHandler
+    if weaponObj then
+        local i = weaponObj.ITEMPICKUP
+        ItemHandler:InvokeServer( i )
+    end
+end
+function Overwatch.Functions:GiveItemM9()
+    Overwatch.Functions:GiveWeapon( "M9" )
 end
 
-function Overwatch.Functions:DropDownTestCallback2()
-    rconsolewarn( "Option 2" )
+function Overwatch.Functions:GiveItemRem870()
+    Overwatch.Functions:GiveWeapon( "Remington 870" )
 end
+
+function Overwatch.Functions:GiveItemAK47()
+    Overwatch.Functions:GiveWeapon( "AK-47" ) 
+end
+
 local Config = Overwatch.Functions:CreateDropDownConfig(
-    {Overwatch.Functions.DropDownTestCallback1, Overwatch.Functions.DropDownTestCallback2},
-    {"DropDownTestCallback1", "DropDownTestCallback2"},
-    {"Option 1", "Option 2"}
+    {Overwatch.Functions.GiveItemM9, Overwatch.Functions.GiveItemRem870, Overwatch.Functions.GiveItemAK47},
+    {"GiveItemDropDownGiveM9", "GiveItemDropDownGiveRem870", "GiveItemDropDownGiveAK47"},
+    {"M9", "Remington 870", "AK-47"}
 )
-Overwatch.Functions:CreateDropDown( Config, "DropDownTest1", "Drop Down")
+Overwatch.Functions:CreateDropDown( Config, "GiveItemDropDown", "Give Weapon")
 
 local function runtime()
-    if Overwatch.Statuses.DisableDoors then
+    if Overwatch.Statuses["DisableDoors" .. Addendum.ToggleButton] then
         local Doors = game.Workspace.Doors:GetChildren()
         for i, v in pairs( Doors ) do
             for k, t in pairs( v:GetChildren() ) do 
@@ -413,10 +444,14 @@ local function runtime()
             end
         end
     end
-    if Overwatch.Statuses.SetAboveLaw then
-        if LENV_ClientInputHandler and LENV_CS then 
-            LENV_CS.IsFighting = false
-            LENV_CS.IsArrested = false
+    if Overwatch.Statuses["SetAboveLaw" .. Addendum.ToggleButton] then
+        if game.Workspace:FindFirstChild( player.Name ) then 
+            local LENV_ClientInputHandler = getsenv( player.Character.ClientInputHandler )
+            local CS = LENV_ClientInputHandler.cs
+            if LENV_ClientInputHandler and CS then 
+                CS.isFighting = false
+                CS.isArrested = false
+            end
         end
     end
 end
