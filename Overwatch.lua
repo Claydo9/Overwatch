@@ -18,6 +18,13 @@ local Addendum = Overwatch.Addendums
 local player = game:GetService( "Players" ).LocalPlayer
 local playerGui = player.PlayerGui 
 
+Overwatch.SpawnLocations = {
+    ["Criminal"] = game.Workspace["Criminals Spawn"].SpawnLocation,
+    ["Neutral"] = game.Workspace["NEUTRAL SPAWNLOCATIONS"].SpawnLocation,
+    ["Guard"] = game.Workspace["Prison_guardspawn"].spawn,
+    ["Prisoner"] = game.Workspace["Prison_spawn"].Nexus.SpawnLocation
+}
+
 local function setupGUI()
     local templates = Instance.new( "Folder", game:GetService( "ReplicatedStorage" ) )
     templates.Name = "Templates"
@@ -397,6 +404,9 @@ function Overwatch.Functions:SetAboveLaw( state )
                 end
             end
         end
+    else
+        wait( 1 )
+        Overwatch.Functions:SetAboveLaw( true )
     end
 end
 
@@ -407,8 +417,6 @@ end
 function Overwatch.Functions:TestPushButtonCallback()
     rconsolewarn( "button pressy" )
 end
-Overwatch.Functions:CreateToggleButton( Overwatch.Functions.DisableDoors, "DisableDoors", "Disable Doors" )
-Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAboveLaw", "Set Above Law" )
 
 function Overwatch.Functions:GiveWeapon( wpn )
     local weaponObj = game.Workspace.Prison_ITEMS.giver:FindFirstChild( wpn )
@@ -435,19 +443,22 @@ function Overwatch.Functions:SetPlayerTeam( color )
     event:FireServer( color )
 end
 
+function Overwatch.Functions:TeleportToSpawn( spawn )
+    if game.Workspace:FindFirstChild( player.Name ) then
+        player.Character.HumanoidRootPart.CFrame = spawn.CFrame
+    end
+end
+
 local DD_GiveItemConfig = Overwatch.Functions:CreateDropDownConfig(
     {Overwatch.Functions.GiveItemM9, Overwatch.Functions.GiveItemRem870, Overwatch.Functions.GiveItemAK47},
     {"DD_GIVEITEMM9", "DD_GIVEITEMREM870", "DD_GIVEITEMAK47"},
     {"M9", "Remington 870", "AK-47"}
 )
-
-Overwatch.Functions:CreateDropDown( DD_GiveItemConfig, "DD_GIVEITEM", "Give Weapon" )
-
 local DD_SetPlayerTeamConfig = Overwatch.Functions:CreateDropDownConfig(
     {
         function() Overwatch.Functions:SetPlayerTeam( "Bright orange" ) end,
         function() Overwatch.Functions:SetPlayerTeam( "Bright blue" ) end,
-        function() Overwatch.Functions:SetPlayerTeam( "Medium stone grey" ) end
+        function() Overwatch.Functions:SetPlayerTeam( "Medium stone grey" ) end,
     },
     {
         "DD_SETPLAYERTEAMPRISONER", "DD_SETPLAYERTEAMGUARD", "DD_SETPLAYERTEAMNEUTRAL"
@@ -456,8 +467,28 @@ local DD_SetPlayerTeamConfig = Overwatch.Functions:CreateDropDownConfig(
         "Prisoner", "Guard", "Neutral"
     }
 )
+local DD_TeleportToSpawnConfig = Overwatch.Functions:CreateDropDownConfig(
+    {
+        function() Overwatch.Functions:TeleportToSpawn( Overwatch.SpawnLocations.Criminal ) end,
+        function() Overwatch.Functions:TeleportToSpawn( Overwatch.SpawnLocations.Neutral ) end,
+        function() Overwatch.Functions:TeleportToSpawn( Overwatch.SpawnLocations.Guard ) end,
+        function() Overwatch.Functions:TeleportToSpawn( Overwatch.SpawnLocations.Prisoner ) end
+    },
+    {
+        "DD_TELEPORTTOSPAWNCRIMINAL", "DD_TELEPORTTOSPAWNNEUTRAL", "DD_TELEPORTTOSPAWNGUARD", "DD_TELEPORTSPAWNPRISONER"
+    },
+    {
+        "Criminal", "Neutral", "Guard", "Prisoner"
+    }
+)
 
+Overwatch.Functions:CreateDropDown( DD_GiveItemConfig, "DD_GIVEITEM", "Give Weapon" )
 Overwatch.Functions:CreateDropDown( DD_SetPlayerTeamConfig, "DD_SETPLAYERTEAM", "Set Team" )
+Overwatch.Functions:CreateDropDown( DD_TeleportToSpawnConfig, "DD_TELEPORTTOSPAWN", "Goto Spawn" )
+
+Overwatch.Functions:CreateToggleButton( Overwatch.Functions.DisableDoors, "DisableDoors", "Disable Doors" )
+Overwatch.Functions:CreateToggleButton( Overwatch.Functions.SetAboveLaw, "SetAboveLaw", "Set Above Law" )
+
 
 local function runtime()
     if Overwatch.Statuses["DisableDoors" .. Addendum.ToggleButton] then
